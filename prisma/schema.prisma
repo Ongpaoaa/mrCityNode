@@ -1,0 +1,444 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Session {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  createAt  DateTime @default(now())
+  expiresAt DateTime
+}
+
+model userItem {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  itemId String @db.ObjectId
+  amount Int    @default(1)
+  userId String @db.ObjectId
+  Item   Item   @relation(fields: [itemId], references: [id])
+  User   User   @relation(fields: [userId], references: [id])
+}
+
+type LocalizationString {
+  English     String
+  Thai        String           
+}
+
+model User {
+  id           String        @id @default(auto()) @map("_id") @db.ObjectId
+  loginType    LoginType     @default(Google)
+  email        String        @unique
+  FirstLogin   DateTime  
+  userName     String?
+  profileUrl   String?
+  firstName    String?
+  lastName     String?
+  isOnline     Boolean?
+  tutorialStep Int?          @default(0)
+  isTutorial   Boolean       @default(false)
+  admin        Boolean       @default(false)
+  language     Language      @default(Thai)
+  currentQuest CurrentQuest
+  
+  Session      Session[]
+  Inventory    userItem[]
+  collection   Collection
+  LeaderBoard  LeaderBoard[]
+  CompletedQuest    completedQuest[]
+  LandMarkInteract  landMarkInteract[]
+  LandMarkCheckIn   landMarkCheckIn[]
+  NPCInteract       NPCInteract[]
+  ItemUsed          ItemUsed[]
+  GachaTicketUsed   GachaTicketUsed[]
+  AntiqueInteract   AntiqueInteract[]
+  AntiqueNavigate   AntiqueNavigate[]
+  AntiqueUsed       AntiqueUsed[]
+  UserOnline        UserOnline[]
+  UserLogin         userLogin[]
+  FeedBackAnswer    FeedBackAnswer[]
+  lastUpdate        DateTime? @default(now())
+}
+
+enum LoginType {
+  Google
+  Facebook
+  AppleID
+}
+
+type Collection {
+  landMark userCollection[]
+  item     userAntiqueCollection[]
+}
+
+type userCollection{
+  id  String  @db.ObjectId
+  status collectStatus @default(Found)
+}
+
+type userAntiqueCollection{
+  id String @db.ObjectId
+  status AntiqueStatus @default(Found)
+}
+
+enum collectStatus{
+  Unknown
+  Found
+  Collected
+}
+
+enum AntiqueStatus{
+  Found
+  Navigated
+  Complete
+}
+
+enum Language {
+  Thai
+  English
+  Chinese
+}
+
+enum QuestStatus {
+  undefined
+  available
+  inProgress
+  completed
+}
+
+type CurrentQuest {
+  questId  String?      @db.ObjectId
+  progress Int?
+  status   QuestStatus? @default(undefined)
+}
+
+model Quest {
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String
+  Name        LocalizationString?
+  Description LocalizationString?
+  active      QuestActive   @default(InGame)
+  startDate   DateTime?      
+  endDate     DateTime?
+  assignor    String        @unique @db.ObjectId
+  item        String        @db.ObjectId
+  target      Target
+  completedQuests  completedQuest[]
+}
+
+enum QuestActive {
+  Start
+  InGame
+}
+
+type Target {
+  MaxProgress Int
+  TypeQuest   typeQuest
+  TargetId    String    @db.ObjectId
+}
+
+enum typeQuest {
+  InteractedLandmark
+  InteractedNPC
+  CheckInLandMark
+  UsedItem
+  PhotoAnimal
+  PhotoAnimalEvent
+}
+
+model Item {
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  Name        LocalizationString?
+  Description LocalizationString?
+  description String
+  type        TypeItem   @default(Unknown)
+  condition   String
+  expireDate  DateTime
+
+  userItem    userItem[]
+  ItemUsed    ItemUsed[]
+  gacha       Gacha[]
+  GachaTicketUsed GachaTicketUsed[]
+}
+
+enum TypeItem {
+  GiftVouncher
+  GachaTicket
+  Unknown
+}
+
+model LandMark {
+  id              String            @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  description     String
+  Name        LocalizationString?
+  Description LocalizationString?
+  shadowImage     String?
+  coverImage      String?
+  logoImage       String?
+  type            LandMarkType
+  openDate        String
+  slogan          String?
+  FacebookAR      String?
+  InstargramAR    String?
+  startTime       DateTime
+  endTime         DateTime
+  Latitude        Float
+  Longitude       Float
+  Detail          detail[]
+  workshop        Workshop?
+  menu            Menu[]
+  Road            String
+  Area            Area  @default(Songkhla)
+
+  
+  createAt        DateTime? @default(now())
+
+  landMarkCheckIn landMarkCheckIn[]
+  landMarkInteract landMarkInteract[]
+}
+enum LandMarkType {
+  Cafe
+  Restaurant
+  Dessert
+  Landmark
+  StreetArt
+  Zoo
+}
+
+enum Area {
+  Songkhla
+  Zoo
+}
+
+type detail {
+  Name        LocalizationString?
+  Description LocalizationString?
+  ImageURL    String?
+  ticketId    String?   @db.ObjectId
+  createAt    DateTime? @default(now())
+}
+
+type Workshop {
+  name            String?
+  description     String?
+  Name        LocalizationString?
+  Description LocalizationString?
+  workShop        String?   @db.ObjectId 
+  imageId         String   
+  startTime       DateTime
+  endTime         DateTime
+
+  //ImageId         String  @relation(fields: [Image], references: [id])
+}
+
+type Menu {
+  name        String
+  description String
+  Name        LocalizationString?
+  Description LocalizationString?
+  imageId       String  
+
+  //ImageId     String  @relation(fields: [Image], references: [id])
+}
+
+model NPC {
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  name        String       @unique
+  Name        LocalizationString?
+  interaction NPCInteract[]
+}
+
+model LeaderBoard {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId          String   @unique @db.ObjectId
+  user            User     @relation(fields: [userId], references: [id])
+  collectionCount Int
+  rank            Int
+  lastUpdate      DateTime @default(now())
+}
+
+model Antique {
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  description     String
+  Name        LocalizationString?
+  Description LocalizationString?
+  type            String
+  
+  AntiqueInteract AntiqueInteract[]
+  AntiqueNavigate AntiqueNavigate[]
+  AntiqueUsed     AntiqueUsed[]
+}
+
+model Gacha {
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  itemId          String    @db.ObjectId @unique
+  Item            Item      @relation(fields: [itemId], references: [id])
+  drop            String[]  @db.ObjectId
+
+  GachaTicketUsed GachaTicketUsed[]
+}
+
+model GachaTicketUsed {
+  id              String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId          String  @db.ObjectId
+  itemId          String  @db.ObjectId
+  rewardId        String  @db.ObjectId
+  time            DateTime @default(now())
+
+  User            User    @relation(fields: [userId],  references: [id])
+  reward          Item    @relation(fields: [itemId], references: [id])
+  item            Gacha   @relation(fields: [itemId], references: [itemId])
+}
+
+model Admin {
+  id                 String  @id @default(auto()) @map("_id") @db.ObjectId
+  login              Boolean
+  DevLogin           Boolean?
+  Version            String
+  UpdateLandmarkData Boolean
+}
+
+model ImageData {
+  id              String          @id @default(auto()) @map("_id") @db.ObjectId
+  description     String
+  url             String
+}
+
+model Advertisement {
+  id              String      @id @default(auto()) @map("_id") @db.ObjectId
+  description     String?
+  logoId          String?     @db.ObjectId
+  imageId         String?     @db.ObjectId
+  locationUrl     String
+}
+
+model Shop {
+  id              String      @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  description     String?
+  logoId          String?     @db.ObjectId
+  imageId         String?     @db.ObjectId
+  locationUrl     String
+}
+
+model FeedBackQuestion {
+  id              String      @id @default(auto()) @map("_id") @db.ObjectId
+  question        LocalizationString
+  answer          LocalizationString[]
+  createAt        DateTime?   @default(now())
+
+  FeedBackAnswer  FeedBackAnswer[]
+}
+
+model FeedBackAnswer {
+  id              String      @id @default(auto()) @map("_id") @db.ObjectId
+  answer          String
+  questionId      String      @db.ObjectId
+  userId          String      @db.ObjectId
+  createAt        DateTime?   @default(now())
+
+  User            User  @relation(fields: [userId],  references: [id])
+  question        FeedBackQuestion @relation(fields: [questionId],  references: [id])
+}
+
+//Data Stat
+model userLogin {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId        String    @db.ObjectId
+  time          DateTime  @default(now())
+
+  User          User      @relation(fields: [userId],  references: [id])
+}
+model completedQuest{
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  questId       String    @db.ObjectId
+  userId        String    @db.ObjectId
+  time          DateTime  @default(now())
+
+  User          User      @relation(fields: [userId],  references: [id])
+  Quest         Quest     @relation(fields: [questId], references: [id])
+}
+
+model landMarkCheckIn{
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  landMarkId    String?    @db.ObjectId
+  userId        String    @db.ObjectId
+  time          DateTime  @default(now())
+
+  User          User      @relation(fields: [userId],  references: [id])
+  LandMark     LandMark?  @relation(fields: [landMarkId], references: [id])
+}
+
+model landMarkInteract{
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  landMarkId    String?    @db.ObjectId
+  userId        String    @db.ObjectId
+  time          DateTime  @default(now())
+
+  User          User      @relation(fields: [userId],  references: [id])
+  LandMark      LandMark?  @relation(fields: [landMarkId], references: [id])
+}
+
+model AntiqueInteract{
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  antiqueId     String?   @db.ObjectId
+  userId        String    @db.ObjectId
+  time          DateTime  @default(now())
+
+  User          User      @relation(fields: [userId],  references: [id])
+  Antique       Antique?  @relation(fields: [antiqueId], references: [id])
+}
+
+model AntiqueNavigate{
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  antiqueId     String?   @db.ObjectId
+  userId        String    @db.ObjectId
+  time          DateTime  @default(now())
+
+  User          User      @relation(fields: [userId],  references: [id])
+  Antique       Antique?  @relation(fields: [antiqueId], references: [id])
+}
+model AntiqueUsed{
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  antiqueId     String?   @db.ObjectId
+  userId        String    @db.ObjectId
+  time          DateTime  @default(now())
+
+  User          User      @relation(fields: [userId],  references: [id])
+  Antique       Antique?  @relation(fields: [antiqueId], references: [id])
+}
+model UserOnline{
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId        String    @db.ObjectId
+  login         DateTime  
+  closeApp      DateTime  @default(now())
+
+  User          User      @relation(fields: [userId],  references: [id])
+}
+
+model NPCInteract{
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  NPCId         String?   @db.ObjectId
+  userId        String    @db.ObjectId
+  time          DateTime  @default(now()) 
+
+  User          User      @relation(fields: [userId],  references: [id])
+  NPC           NPC?      @relation(fields: [NPCId], references: [id])
+}
+model ItemUsed{
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  itemId        String    @db.ObjectId
+  userId        String    @db.ObjectId
+  time          DateTime  @default(now())
+
+  User          User      @relation(fields: [userId],  references: [id])
+  item          Item      @relation(fields: [itemId], references: [id])
+}
