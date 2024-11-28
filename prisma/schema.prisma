@@ -52,6 +52,7 @@ model User {
   CompletedQuest    completedQuest[]
   LandMarkInteract  landMarkInteract[]
   LandMarkCheckIn   landMarkCheckIn[]
+  LandmarkPhoto     landMarkPhoto[]
   NPCInteract       NPCInteract[]
   ItemUsed          ItemUsed[]
   GachaTicketUsed   GachaTicketUsed[]
@@ -154,13 +155,18 @@ enum typeQuest {
 model Item {
   id          String     @id @default(auto()) @map("_id") @db.ObjectId
   name        String
-  Name        LocalizationString?
-  Description LocalizationString?
   description String
   type        TypeItem   @default(Unknown)
-  condition   String
+  imageURL    String?
+  condition   String?
+  Name        LocalizationString?
+  Description LocalizationString?
+  Summerize   LocalizationString?
+  Important   LocalizationString?
+  LocationUsedId String[] @db.ObjectId
   expireDate  DateTime
-
+  isExpire    Boolean?
+  createAt    DateTime   @default(now())
   userItem    userItem[]
   ItemUsed    ItemUsed[]
   gacha       Gacha[]
@@ -196,13 +202,20 @@ model LandMark {
   menu            Menu[]
   Road            String
   Area            Area  @default(Songkhla)
-
+  pinType         PinType @default(Static)
   
-  createAt        DateTime? @default(now())
+  createAt        DateTime @default(now())
 
   landMarkCheckIn landMarkCheckIn[]
   landMarkInteract landMarkInteract[]
+  landMarkPhoto landMarkPhoto[]
 }
+
+enum PinType {
+  Dynamic
+  Static
+}
+
 enum LandMarkType {
   Cafe
   Restaurant
@@ -218,6 +231,7 @@ enum Area {
 }
 
 type detail {
+  HeaderName  LocalizationString?
   Name        LocalizationString?
   Description LocalizationString?
   ImageURL    String?
@@ -378,6 +392,16 @@ model landMarkCheckIn{
 }
 
 model landMarkInteract{
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  landMarkId    String?    @db.ObjectId
+  userId        String    @db.ObjectId
+  time          DateTime  @default(now())
+
+  User          User      @relation(fields: [userId],  references: [id])
+  LandMark      LandMark?  @relation(fields: [landMarkId], references: [id])
+}
+
+model landMarkPhoto{
   id            String    @id @default(auto()) @map("_id") @db.ObjectId
   landMarkId    String?    @db.ObjectId
   userId        String    @db.ObjectId

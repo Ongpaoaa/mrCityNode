@@ -7,5 +7,5 @@ router.route("/")
     .post(itemController.Create);
     
 router.route("/test")
-    .get(itemController.Test);
+    .post(itemController.Test);
 export const itemRouter: Router = router;

@@ -275,7 +275,49 @@ export const CreateLandmarkInteraction = async (req: Request, res: Response) => 
   }
 
 }
+export const CreateLandmarkPhoto = async (req: Request, res: Response) => {
+  try {
+    const { landmarkId }: { landmarkId: string } = req.body;
+    const landMarkexisted = await Landmark.findUnique({
+      where: { id: landmarkId }
+    });
 
+    if (landMarkexisted) {
+
+      await User.update({
+        where: { id: req.userId },
+        data: {
+          lastUpdate: new Date(),
+          LandmarkPhoto: {
+            create: {
+              landMarkId: landmarkId
+            }
+          }
+        }
+      });
+
+      
+      res.status(200).send({ success: true });
+    } else {
+      return res.status(400).send({
+        success: false,
+        message: "Landmark with ID [landmarkId] not found.",
+      });
+    }
+
+
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2023") {
+        return res.status(400).send({
+          success: false,
+          message: "Invalid Object ID",
+        });
+      }
+    }
+    res.status(500).send({ success: false, error });
+  }
+}
 export const CreateNPCInteraction = async (req: Request, res: Response) => {
   try {
     const { NPCId }: { NPCId: string } = req.body;
@@ -301,6 +343,7 @@ export const CreateNPCInteraction = async (req: Request, res: Response) => {
   }
 
 }
+
 // export const CreateUserCollection = async (req: Request, res: Response) => {
 //   try {
 //     const user = await User.findUnique({

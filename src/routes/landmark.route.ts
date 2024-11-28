@@ -28,6 +28,6 @@ router
 
 router
   .route("/temp")
-  .post(landMarkController.TempUpdate);
+  .post(authAdminMiddleware,landMarkController.UpdateLocalize);
   
 export const landMarkRouter: Router = router;

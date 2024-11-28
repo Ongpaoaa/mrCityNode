@@ -1,6 +1,7 @@
 import { Item } from "@/lib/prisma";
 import { Request, Response } from "express";
 import * as itemservice from "@/service/item.service";
+import { create } from "domain";
 
 export const GetAll = async (req: Request, res: Response) => {
   try {
@@ -56,15 +57,53 @@ export const GetById = async (req: Request, res: Response) => {
     return res.status(500).send({ success: false, error });
   }
 };
-//for test only nobody know
+
 export const Test = async (req: Request, res: Response) => {
   try {
-    const { itemId } = req.body;
-    console.log(itemId);
-    const item = await itemservice.isExpired(itemId);
-    return res.status(200).send({ success: true, item});
+    const items = await Item.findMany({
+      select: {
+        id: true,
+        name: true,
+        description: true,
+      },
+    });
+
+    for (const item of items) 
+      {
+        await Item.update({
+          where:{
+            id: item.id
+          },
+          data: {
+              // Name: {
+              //   Thai: item.name,
+              //   English: item.name,
+              // },
+              // Description: {
+              //   Thai: item.description,
+              //   English: item.description,
+              // },
+              // Summerize: {
+              //   Thai: "",
+              //   English: "",
+              // },
+              // Important: {
+              //   Thai: "",
+              //   English: "",
+              // },
+              // LocationUsedId:["673f3a0c66eb37359dd5f2b4"],
+              // createAt:new Date(),
+              // isExpire: false
+              imageURL: ""
+            },
+          
+        });
+      
+    }
+  
+    res.status(201).send({ success: true, data: items });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ success: false, error });
   }
-  catch (error) {
-    return res.status(500).send({ success: false, error });
-  }
-}
+};

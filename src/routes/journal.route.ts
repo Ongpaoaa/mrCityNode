@@ -15,6 +15,9 @@ router.route("/landmarkCheckIn")
     .get(DataController.GetLandMarkCheckInCount)
     .post(authMiddleware, JournalController.CreateLandmarkCheckIn);
 
+router.route("/landmarkPhoto")
+    .post(authMiddleware, JournalController.CreateLandmarkPhoto)
+
 router.route("/NPCInteraction")
     .post(authMiddleware, JournalController.CreateNPCInteraction)
 

@@ -240,7 +240,7 @@ export const TempUpdate = async (req: Request, res: Response) => {
     for (const landmark of landmarks) {
       // Update from workshop details
       if (landmark.workshop) {
-        await updateLandmarkDetail(landmark, {
+        await updateLandmarkDetail(landmark, "workshop",{
           name: landmark.workshop.Name,
           description: landmark.workshop.Name,
           imageURL: landmark.workshop.imageId,
@@ -250,7 +250,8 @@ export const TempUpdate = async (req: Request, res: Response) => {
 
       // Update from menu details
       if (landmark.menu?.length) {
-        await updateLandmarkDetail(landmark, {
+        const header = (landmark)
+        await updateLandmarkDetail(landmark, "menu",{
           name: landmark.menu[0].Name,
           description: landmark.menu[0].Name,
           imageURL: landmark.menu[0].imageId,
@@ -267,7 +268,7 @@ export const TempUpdate = async (req: Request, res: Response) => {
 };
 
 // Helper function to update landmark details
-async function updateLandmarkDetail(landmark: any, detail: any) {
+async function updateLandmarkDetail(landmark: any,header: string ,detail: any) {
   await Landmark.update({
     where:{
       id: landmark.id
@@ -275,6 +276,10 @@ async function updateLandmarkDetail(landmark: any, detail: any) {
     data: {
       Detail: {
         push: {
+          HeaderName: {
+            Thai: header,
+            English:header
+          },
           Name: {
             Thai: detail.name?.Thai,
             English: detail.name?.English,
@@ -291,5 +296,4 @@ async function updateLandmarkDetail(landmark: any, detail: any) {
     },
   });
 }
-
 

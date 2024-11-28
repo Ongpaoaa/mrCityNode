@@ -495,15 +495,18 @@ export const AnswerQuestion = async (req: Request, res: Response ) => {
     const Question = await FeedBackQuestion.findUnique({
       where: { id: questionID },
     })
+    const isAnswer = await FeedBackAnswer.findFirst({
+      where:{
+        questionId: questionID,
+        userId: req.userId
+      }
+    })
+    if(isAnswer)
+      return res.status(200).send({ success: true, message: "User already answer" });
     
     if(!Question)
     {
       return res.status(404).send({ success: false, message: "Question Id not found" })
-    }
-    
-    if(!(Answer in Question.answer))
-    {
-      return res.status(404).send({ success: false, message: "Answer not in Question" })
     }
     
     const AnswerQuestion = await FeedBackAnswer.create({
