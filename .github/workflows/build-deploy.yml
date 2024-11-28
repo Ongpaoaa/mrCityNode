@@ -44,7 +44,7 @@ jobs:
           user: ${{ secrets.SSH_USERNAME }}
           pass: ${{ secrets.SSH_PASSWORD }}
           command: |
-            cd songkhla-xr-backend/
+            cd mrCityNode/
             git pull origin main
             npx prisma generate
             yarn build
