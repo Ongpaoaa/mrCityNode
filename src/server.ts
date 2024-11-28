@@ -3,7 +3,7 @@ import helmet from "helmet";
 import dotenv from "dotenv";
 import cors from "cors";
 
-import { indexRouter } from "@/routes";
+import { indexRouter } from "./routes";
 const app: Express = express();
 dotenv.config();
 
