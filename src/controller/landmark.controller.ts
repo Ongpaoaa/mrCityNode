@@ -192,6 +192,7 @@ export const UpdateDetail = async (req: Request, res:Response ) => {
           imageId: string,
           ticketId: string,
         } = req.body;
+        
     const landmark = await Landmark.findFirst({
         where: { id: landMarkId }
     });
