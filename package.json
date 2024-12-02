@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "author": "ChaiyapatOam",
   "description": "Backend for mrCity",
+  "type": "module",
   "main": "./src/server.ts",
   "scripts": {
     "build": "npx tsc && npx tsc-alias",
     "dev": "npx ts-node-dev -r tsconfig-paths/register src/server.ts",
-    "test":"npx ts-node ./src/test.ts"
+    "test": "npx ts-node ./src/test.ts"
   },
   "keywords": [],
   "license": "ISC",
