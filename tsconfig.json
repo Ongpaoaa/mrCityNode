@@ -1,19 +1,20 @@
 {
   "compilerOptions": {
-    "lib": ["es2021"],
-    "target": "es2021",
-    "module": "CommonJS",
-    "baseUrl": ".",
+    "lib": ["es2021"],                   // Supports ES2021 features
+    "target": "es2021",                  // Compile to ES2021
+    "module": "CommonJS",                // Use CommonJS for Node.js
+    "moduleResolution": "node",          // Resolve modules in Node.js style
+    "baseUrl": ".",                      // Base directory for module resolution
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"]                   // Path alias for cleaner imports
     },
-    "outDir": "dist",
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "allowSyntheticDefaultImports": true,
-    "typeRoots": ["./src/types", "./node_modules/@types"]
+    "outDir": "dist",                    // Output directory for compiled files
+    "strict": true,                      // Enable strict type-checking
+    "esModuleInterop": true,             // Interoperability for ES module default imports
+    "skipLibCheck": true,                // Skip type checking for declaration files
+    "allowSyntheticDefaultImports": true, // Support default imports from non-ES modules
+    "typeRoots": ["./src/types", "./node_modules/@types"] // Look for type definitions
   },
-  "include": ["src"],
-  "exclude": ["node_modules"]
+  "include": ["src"],                    // Include files from the src directory
+  "exclude": ["node_modules"]            // Exclude node_modules
 }
