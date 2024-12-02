@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "author": "ChaiyapatOam",
   "description": "Backend for mrCity",
-  "type": "module",
   "main": "./src/server.ts",
   "type": "commonjs",
   "scripts": {
