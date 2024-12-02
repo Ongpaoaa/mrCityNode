@@ -5,6 +5,7 @@
   "description": "Backend for mrCity",
   "type": "module",
   "main": "./src/server.ts",
+  "type": "commonjs",
   "scripts": {
     "build": "npx tsc && npx tsc-alias",
     "dev": "npx ts-node-dev -r tsconfig-paths/register src/server.ts",
