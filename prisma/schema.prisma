@@ -157,6 +157,7 @@ model Item {
   name        String
   description String
   type        TypeItem   @default(Unknown)
+  rarity      RarityItem @default(None)
   imageURL    String?
   condition   String?
   Name        LocalizationString?
@@ -177,6 +178,13 @@ enum TypeItem {
   GiftVouncher
   GachaTicket
   Unknown
+}
+
+enum RarityItem {
+  None
+  Common
+  Rare
+  Epic
 }
 
 model LandMark {

@@ -48,4 +48,4 @@ jobs:
             git pull origin main
             npx prisma generate
             yarn build
-            pm2 restart server
+            pm2 restart my-app 
