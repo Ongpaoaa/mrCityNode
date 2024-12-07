@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 
 import { indexRouter } from "./routes";
+
 const app: Express = express();
 dotenv.config();
 
