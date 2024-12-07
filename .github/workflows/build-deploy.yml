@@ -19,33 +19,41 @@ jobs:
       actions: read
 
     steps:
+      # Checkout the repository
       - name: Checkout Repo
-        uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4
+        uses: actions/checkout@v4
 
+      # Set up Node.js
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: "18.x"
 
-      - name: Checkout yarn
-        uses: borales/actions-yarn@v4
+      # Cache dependencies
+      - name: Cache Node Modules
+        uses: actions/cache@v3
         with:
-          cmd: install
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
-      - name: Build production bundle
-        uses: borales/actions-yarn@v4
-        with:
-          cmd: build
+      # Install and build the project
+      - name: Install and Build
+        run: |
+          yarn install
+          yarn build
 
-      - name: Compose build file on server
-        uses: fifsky/ssh-action@master
+      # Deploy to server using SSH
+      - name: Deploy to Server
+        uses: fifsky/ssh-action@v0.6.1
         with:
           host: ${{ secrets.SSH_HOST }}
           user: ${{ secrets.SSH_USERNAME }}
-          pass: ${{ secrets.SSH_PASSWORD }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           command: |
             cd mrCityNode/
             git pull origin main
             npx prisma generate
             yarn build
-            pm2 restart my-app 
+            pm2 restart my-app
