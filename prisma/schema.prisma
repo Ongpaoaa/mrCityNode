@@ -326,6 +326,8 @@ model Admin {
   DevLogin           Boolean?
   Version            String
   UpdateLandmarkData Boolean
+  LandmarkVersion    String
+  ItemVersion        String
 }
 
 model ImageData {
