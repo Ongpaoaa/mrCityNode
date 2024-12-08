@@ -524,3 +524,60 @@ export const AnswerQuestion = async (req: Request, res: Response ) => {
       return res.status(400).send({ success: false, error })
   }
 }
+
+export const UpdateTutorialBoolean = async (req: Request, res: Response ) => {
+  try
+  {
+    const { boolType }: { boolType: string } = req.body;
+    switch(boolType)
+    {
+      case "inventory":
+        await User.update({
+          where: {
+            id : req.userId
+          },
+          data : {
+            tutorialInventory : false
+          }
+        })
+        break;
+      case "landmarkInfo":
+        await User.update({
+          where: {
+            id : req.userId
+          },
+          data : {
+            tutorialLandmarkInfo : false
+          }
+        })
+        break;
+      case "landmarkMap":
+        await User.update({
+          where: {
+            id : req.userId
+          },
+          data : {
+            tutorialLandmark : false
+          }
+        })
+        break;
+      case "collection":
+        await User.update({
+          where: {
+            id : req.userId
+          },
+          data : {
+            tutorialCollection : false
+          }
+        })
+        break;
+
+    }
+    return res.status(200).send({ success: true })
+  }
+  catch
+  {
+      console.log(error)
+      return res.status(400).send({ success: false, error })
+  }
+}

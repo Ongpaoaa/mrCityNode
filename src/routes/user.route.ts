@@ -42,6 +42,10 @@ router
   .put(authMiddleware, userController.UpdateTutorialStep)
 
 router
+  .route("/tutorialbool")
+  .patch(authMiddleware, userController.UpdateTutorialBoolean);
+
+router
   .route("/completedquest")
   .get(authMiddleware, userController.GetUserCompletedQuest);
 
@@ -67,5 +71,6 @@ router
 router
   .route("/feedback")
   .post(authMiddleware, userController.AnswerQuestion);
+
 
 export const userRoute: Router = router;
