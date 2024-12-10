@@ -27,7 +27,6 @@ yarn start
 
 ```bash
 npx prisma generate
-npx prisma migrate dev
 ```
 
 ## Folder Structure
