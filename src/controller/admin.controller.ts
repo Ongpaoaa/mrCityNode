@@ -12,8 +12,7 @@ export const GetAllUser = async (req: Request, res: Response) => {
             data: {
                 tutorialStep : 20
             }
-        }
-        );
+        });
         return res.status(201).send({success: true, user})
     }
     catch(error)
