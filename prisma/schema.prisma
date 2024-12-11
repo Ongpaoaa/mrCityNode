@@ -330,6 +330,9 @@ model Admin {
   DevLogin           Boolean?
   Version            String
   UpdateLandmarkData Boolean
+  LandmarkVersion    String?
+  QuestVersion       String?
+  ItemVersion        String?
 }
 
 model ImageData {
