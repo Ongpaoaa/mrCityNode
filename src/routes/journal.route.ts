@@ -19,6 +19,7 @@ router.route("/landmarkPhoto")
     .post(authMiddleware, JournalController.CreateLandmarkPhoto)
 
 router.route("/NPCInteraction")
+    .get(authMiddleware, JournalController.GetNPCInteractByPlayer)
     .post(authMiddleware, JournalController.CreateNPCInteraction)
 
 router.route("/usedItem")
