@@ -44,10 +44,10 @@ model User {
   admin        Boolean       @default(false)
   language     Language      @default(Thai)
   currentQuest CurrentQuest
-  tutorialInventory     Boolean? @default(true)
-  tutorialLandmark      Boolean? @default(true)
-  tutorialLandmarkInfo  Boolean? @default(true)
-  tutorialCollection    Boolean? @default(true)
+  tutorialInventory     Boolean? @default(false)
+  tutorialLandmark      Boolean? @default(false)
+  tutorialLandmarkInfo  Boolean? @default(false)
+  tutorialCollection    Boolean? @default(false)
   
   Session      Session[]
   Inventory    userItem[]
